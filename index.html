@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RentalFlow — Property Management</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f5f6f8;color:#18202a}
+button{font:inherit;cursor:pointer}.shell{display:flex;min-height:100vh}.side{width:245px;background:#111827;color:#fff;padding:24px 16px;position:fixed;inset:0 auto 0 0}.logo{font-size:21px;font-weight:800;padding:0 12px 28px}.logo span{color:#78c2a4}.nav button{display:block;width:100%;text-align:left;background:none;border:0;color:#b9c2cf;padding:12px;border-radius:10px;margin:4px 0}.nav button.active,.nav button:hover{background:#202a3a;color:#fff}.main{margin-left:245px;width:calc(100% - 245px);padding:30px 36px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px}.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:#7b8490}.title{font-size:30px;font-weight:750;margin:5px 0}.user{display:flex;gap:12px;align-items:center}.avatar{width:40px;height:40px;border-radius:50%;background:#dfeee7;display:grid;place-items:center;font-weight:700;color:#24654e}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.card{background:#fff;border:1px solid #e7e9ed;border-radius:16px;padding:20px;box-shadow:0 2px 8px #00000008}.metric{font-size:28px;font-weight:750;margin-top:8px}.muted{color:#78818d;font-size:13px}.green{color:#23805e}.amber{color:#9b6a13}.red{color:#b34a4a}.section{margin-top:24px}.sectionhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.section h2{font-size:18px;margin:0}.btn{border:0;border-radius:10px;padding:10px 15px;background:#18202a;color:#fff}.btn.light{background:#eef1f4;color:#27313d}.btn.green{background:#2d8063;color:#fff}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.unit{background:#fff;border:1px solid #e5e7eb;border-radius:16px;overflow:hidden}.photo{height:125px;background:linear-gradient(135deg,#c9d6cf,#8ea99b);display:flex;align-items:end;padding:14px;color:#fff;font-weight:700}.unitbody{padding:16px}.row{display:flex;justify-content:space-between;gap:10px}.pill{font-size:11px;padding:5px 8px;border-radius:999px;background:#e9f6f0;color:#247254;font-weight:700}.pill.off{background:#fff0f0;color:#a34d4d}.unit h3{margin:0 0 6px}.unit .price{font-size:20px;font-weight:750;margin:12px 0}.table{width:100%;border-collapse:collapse;background:#fff;border:1px solid #e5e7eb;border-radius:16px;overflow:hidden}.table th,.table td{text-align:left;padding:14px;border-bottom:1px solid #edf0f2;font-size:13px}.table th{color:#7a8490;font-weight:600}.view{display:none}.view.active{display:block}.hero{background:#18202a;color:#fff;border-radius:22px;padding:38px;margin-bottom:22px}.hero h1{font-size:38px;max-width:650px;margin:8px 0 10px}.hero p{color:#c8d0da;max-width:600px}.publicgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.toast{position:fixed;right:24px;bottom:24px;background:#18202a;color:#fff;padding:14px 18px;border-radius:12px;display:none;box-shadow:0 10px 30px #0003}
+@media(max-width:900px){.side{width:70px}.logo{font-size:0}.logo:after{content:"R";font-size:21px}.nav button{font-size:0;text-align:center}.nav button:before{content:"•";font-size:22px}.main{margin-left:70px;width:calc(100% - 70px);padding:22px}.cards,.grid,.publicgrid{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.cards,.grid,.publicgrid{grid-template-columns:1fr}.main{padding:16px}.hero h1{font-size:30px}}
+</style>
+</head>
+<body>
+<div class="shell">
+<aside class="side">
+  <div class="logo">Rental<span>Flow</span></div>
+  <div class="nav">
+    <button class="active" onclick="show('dashboard',this)">Dashboard</button>
+    <button onclick="show('properties',this)">Propiedades</button>
+    <button onclick="show('tenants',this)">Inquilinos</button>
+    <button onclick="show('payments',this)">Pagos</button>
+    <button onclick="show('contracts',this)">Contratos</button>
+    <button onclick="show('maintenance',this)">Mantenimiento</button>
+    <button onclick="show('public',this)">Website público</button>
+  </div>
+</aside>
+<main class="main">
+<div id="dashboard" class="view active">
+  <div class="top"><div><div class="eyebrow">Propietario · Mi portafolio</div><div class="title">Buenos días, propietario</div></div><div class="user"><span class="muted">9 unidades</span><div class="avatar">JR</div></div></div>
+  <div class="cards">
+    <div class="card"><div class="muted">Propiedades</div><div class="metric">9</div><div class="muted green">Todas activas</div></div>
+    <div class="card"><div class="muted">Ocupación</div><div class="metric">89%</div><div class="muted green">8 de 9 ocupadas</div></div>
+    <div class="card"><div class="muted">Ingresos mensuales</div><div class="metric">$9,600</div><div class="muted">Alquiler contratado</div></div>
+    <div class="card"><div class="muted">Por cobrar</div><div class="metric">$1,200</div><div class="muted amber">1 pago pendiente</div></div>
+  </div>
+  <div class="section"><div class="sectionhead"><h2>Unidades</h2><button class="btn green" onclick="show('properties')">Ver todas</button></div>
+  <div class="grid">
+    <div class="unit"><div class="photo">Apartamento 101</div><div class="unitbody"><div class="row"><h3>101 · Jacó</h3><span class="pill">Alquilado</span></div><div class="muted">2 hab · 2 baños · Amueblado</div><div class="price">$1,200/mes</div></div></div>
+    <div class="unit"><div class="photo">Apartamento 102</div><div class="unitbody"><div class="row"><h3>102 · Jacó</h3><span class="pill">Alquilado</span></div><div class="muted">2 hab · 2 baños · Amueblado</div><div class="price">$1,200/mes</div></div></div>
+    <div class="unit"><div class="photo">Apartamento 103</div><div class="unitbody"><div class="row"><h3>103 · Jacó</h3><span class="pill off">Disponible</span></div><div class="muted">1 hab · 1 baño · Amueblado</div><div class="price">$1,100/mes</div></div></div>
+  </div></div>
+</div>
+
+<div id="properties" class="view">
+ <div class="top"><div><div class="eyebrow">Inventario</div><div class="title">Propiedades</div></div><button class="btn green" onclick="toast('Formulario de nueva propiedad preparado')">+ Nueva propiedad</button></div>
+ <div class="grid">
+<div class="unit"><div class="photo">Apartamento 101</div><div class="unitbody"><div class="row"><h3>101 · Jacó</h3><span class="pill ">Alquilado</span></div><div class="muted">2 hab · 2 baños · Amueblado</div><div class="price">$1200/mes</div><button class="btn light" onclick="toast('Detalle del apartamento '+(100+i))">Administrar</button></div></div><div class="unit"><div class="photo">Apartamento 102</div><div class="unitbody"><div class="row"><h3>102 · Jacó</h3><span class="pill ">Alquilado</span></div><div class="muted">2 hab · 2 baños · Amueblado</div><div class="price">$1200/mes</div><button class="btn light" onclick="toast('Detalle del apartamento '+(100+i))">Administrar</button></div></div><div class="unit"><div class="photo">Apartamento 103</div><div class="unitbody"><div class="row"><h3>103 · Jacó</h3><span class="pill off">Disponible</span></div><div class="muted">1 hab · 1 baños · Amueblado</div><div class="price">$1100/mes</div><button class="btn light" onclick="toast('Detalle del apartamento '+(100+i))">Administrar</button></div></div><div class="unit"><div class="photo">Apartamento 104</div><div class="unitbody"><div class="row"><h3>104 · Jacó</h3><span class="pill ">Alquilado</span></div><div class="muted">2 hab · 2 baños · Amueblado</div><div class="price">$1200/mes</div><button class="btn light" onclick="toast('Detalle del apartamento '+(100+i))">Administrar</button></div></div><div class="unit"><div class="photo">Apartamento 105</div><div class="unitbody"><div class="row"><h3>105 · Jacó</h3><span class="pill ">Alquilado</span></div><div class="muted">2 hab · 2 baños · Amueblado</div><div class="price">$1200/mes</div><button class="btn light" onclick="toast('Detalle del apartamento '+(100+i))">Administrar</button></div></div><div class="unit"><div class="photo">Apartamento 106</div><div class="unitbody"><div class="row"><h3>106 · Jacó</h3><span class="pill ">Alquilado</span></div><div class="muted">2 hab · 2 baños · Amueblado</div><div class="price">$1200/mes</div><button class="btn light" onclick="toast('Detalle del apartamento '+(100+i))">Administrar</button></div></div><div class="unit"><div class="photo">Apartamento 107</div><div class="unitbody"><div class="row"><h3>107 · Jacó</h3><span class="pill ">Alquilado</span></div><div class="muted">2 hab · 2 baños · Amueblado</div><div class="price">$1200/mes</div><button class="btn light" onclick="toast('Detalle del apartamento '+(100+i))">Administrar</button></div></div><div class="unit"><div class="photo">Apartamento 108</div><div class="unitbody"><div class="row"><h3>108 · Jacó</h3><span class="pill ">Alquilado</span></div><div class="muted">2 hab · 2 baños · Amueblado</div><div class="price">$1200/mes</div><button class="btn light" onclick="toast('Detalle del apartamento '+(100+i))">Administrar</button></div></div><div class="unit"><div class="photo">Apartamento 109</div><div class="unitbody"><div class="row"><h3>109 · Jacó</h3><span class="pill ">Alquilado</span></div><div class="muted">2 hab · 2 baños · Amueblado</div><div class="price">$1200/mes</div><button class="btn light" onclick="toast('Detalle del apartamento '+(100+i))">Administrar</button></div></div>
+ </div>
+</div>
+
+<div id="tenants" class="view">
+ <div class="top"><div><div class="eyebrow">Relaciones</div><div class="title">Inquilinos</div></div><button class="btn green" onclick="toast('Nueva solicitud de alquiler')">+ Nueva solicitud</button></div>
+ <table class="table"><thead><tr><th>Inquilino</th><th>Unidad</th><th>Contrato</th><th>Pago</th><th>Estado</th></tr></thead><tbody>
+ <tr><td>Carlos Méndez</td><td>101</td><td>Activo · hasta 31/08/27</td><td>$1,200</td><td><span class="pill">Al día</span></td></tr>
+ <tr><td>María Rojas</td><td>102</td><td>Activo · hasta 30/09/27</td><td>$1,200</td><td><span class="pill">Al día</span></td></tr>
+ <tr><td>John Smith</td><td>104</td><td>Por firmar</td><td>$1,200</td><td><span class="pill off">Pendiente</span></td></tr>
+ </tbody></table>
+</div>
+
+<div id="payments" class="view">
+ <div class="top"><div><div class="eyebrow">Finanzas</div><div class="title">Pagos</div></div><button class="btn green" onclick="toast('Link de pago generado')">Generar link de pago</button></div>
+ <div class="cards"><div class="card"><div class="muted">Cobrado este mes</div><div class="metric">$8,400</div></div><div class="card"><div class="muted">Pendiente</div><div class="metric">$1,200</div></div><div class="card"><div class="muted">Tasa de cobro</div><div class="metric">88%</div></div><div class="card"><div class="muted">Recibos</div><div class="metric">8</div></div></div>
+ <div class="section"><table class="table"><thead><tr><th>Fecha</th><th>Inquilino</th><th>Unidad</th><th>Monto</th><th>Estado</th></tr></thead><tbody><tr><td>01/08/26</td><td>Carlos Méndez</td><td>101</td><td>$1,200</td><td><span class="pill">Pagado</span></td></tr><tr><td>01/08/26</td><td>María Rojas</td><td>102</td><td>$1,200</td><td><span class="pill">Pagado</span></td></tr><tr><td>01/08/26</td><td>John Smith</td><td>104</td><td>$1,200</td><td><span class="pill off">Pendiente</span></td></tr></tbody></table></div>
+</div>
+
+<div id="contracts" class="view">
+ <div class="top"><div><div class="eyebrow">Documentos</div><div class="title">Contratos</div></div><button class="btn green" onclick="toast('Nuevo contrato: completa los datos del inquilino')">+ Crear contrato</button></div>
+ <div class="card"><h3>Flujo digital</h3><p class="muted">Solicitud → aprobación → generación automática → firma → copia para ambas partes.</p><div class="row"><button class="btn light" onclick="toast('Plantilla de contrato abierta')">Ver plantilla</button><button class="btn green" onclick="toast('Contrato listo para enviar')">Enviar para firma</button></div></div>
+ <div class="section"><table class="table"><thead><tr><th>Contrato</th><th>Unidad</th><th>Inquilino</th><th>Estado</th></tr></thead><tbody><tr><td>#CR-2026-001</td><td>101</td><td>Carlos Méndez</td><td><span class="pill">Firmado</span></td></tr><tr><td>#CR-2026-002</td><td>104</td><td>John Smith</td><td><span class="pill off">Por firmar</span></td></tr></tbody></table></div>
+</div>
+
+<div id="maintenance" class="view">
+ <div class="top"><div><div class="eyebrow">Operación</div><div class="title">Mantenimiento</div></div><button class="btn green" onclick="toast('Solicitud de mantenimiento creada')">+ Nueva solicitud</button></div>
+ <div class="grid"><div class="card"><div class="muted">Abiertos</div><div class="metric">2</div></div><div class="card"><div class="muted">En proceso</div><div class="metric">1</div></div><div class="card"><div class="muted">Resueltos este mes</div><div class="metric">7</div></div></div>
+ <div class="section"><table class="table"><thead><tr><th>Unidad</th><th>Problema</th><th>Fecha</th><th>Estado</th></tr></thead><tbody><tr><td>101</td><td>Aire acondicionado</td><td>17/08/26</td><td><span class="pill off">Abierto</span></td></tr><tr><td>107</td><td>Fuga de agua</td><td>16/08/26</td><td><span class="pill">En proceso</span></td></tr></tbody></table></div>
+</div>
+
+<div id="public" class="view">
+ <div class="hero"><div class="eyebrow">Website público · Ejemplo</div><h1>Tu próximo hogar empieza aquí.</h1><p>Un sitio profesional para mostrar tus apartamentos, recibir solicitudes, firmar contratos y cobrar de forma sencilla.</p><button class="btn green" onclick="toast('Aquí comenzaría la solicitud de alquiler')">Ver apartamentos disponibles</button></div>
+ <div class="sectionhead"><h2>Apartamentos disponibles</h2><span class="muted">1 disponible</span></div>
+ <div class="publicgrid"><div class="unit"><div class="photo">Apartamento 103</div><div class="unitbody"><h3>Apartamento 103</h3><div class="muted">Jacó · 1 habitación · 1 baño</div><div class="price">$1,100/mes</div><button class="btn green" onclick="toast('Solicitud de alquiler iniciada')">Solicitar alquiler</button></div></div></div>
+</div>
+</main></div>
+<div id="toast" class="toast"></div>
+<script>
+function show(id,el){document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));if(el)el.classList.add('active')}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';setTimeout(()=>t.style.display='none',2200)}
+</script>
+</body></html>
