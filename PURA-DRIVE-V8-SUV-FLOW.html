@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#063f38">
+<title>PURA DRIVE V8 — Costa Rica Car Rental</title>
+<style>
+:root{
+ --forest:#063f38;--deep:#022f2b;--teal:#00b7a6;--lime:#c8ff00;
+ --gold:#e2b93b;--cream:#f6faf7;--ink:#073d37;--muted:#72857f;--white:#fff;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--cream);color:var(--ink)}
+button,input,select{font:inherit}
+.header{height:76px;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 22px;position:relative;z-index:10}
+.logo{font-size:25px;font-weight:900;letter-spacing:1px}.logo span{color:var(--gold)}
+.menu{width:46px;height:46px;border:0;border-radius:14px;background:var(--forest);color:#fff;font-size:24px}
+.hero{
+ min-height:720px;position:relative;overflow:hidden;color:#fff;
+ background:linear-gradient(110deg,rgba(2,47,43,.97) 0%,rgba(3,80,70,.76) 48%,rgba(0,0,0,.08) 100%),
+ url("https://images.unsplash.com/photo-1518509562904-e7ef99cdcc86?auto=format&fit=crop&w=1600&q=85") center/cover;
+}
+.hero-inner{padding:64px 25px 34px;max-width:650px}
+.kicker{color:var(--lime);font-weight:900;letter-spacing:3px;font-size:12px;margin-bottom:17px}
+.kicker span{color:#fff;letter-spacing:1px}
+h1{margin:0;font-size:clamp(46px,13.5vw,78px);line-height:.89;letter-spacing:-3px;text-transform:uppercase}
+h1 .accent{color:var(--lime)}
+.sub{font-size:17px;line-height:1.4;max-width:430px;margin:22px 0 25px}
+.reserve{width:100%;border:0;border-radius:16px;padding:18px;background:linear-gradient(90deg,var(--lime),#edff28);color:var(--ink);font-weight:900;font-size:17px;box-shadow:0 12px 30px rgba(0,0,0,.22)}
+.vehicles{display:block;text-align:center;color:#fff;margin-top:13px;font-weight:800;text-decoration:underline}
+.savings{margin:-2px 18px 0;background:#fff;border-radius:22px;box-shadow:0 12px 35px rgba(0,0,0,.15);padding:20px 10px;position:relative;z-index:4}
+.savings h2{text-align:center;font-size:16px;margin:0 0 17px}
+.save-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+.save{text-align:center;border-right:1px solid #e1e8e5}.save:last-child{border:0}
+.pill{display:inline-block;padding:7px 9px;border-radius:30px;background:#eaf8df;font-size:11px;font-weight:900}
+.save:nth-child(2) .pill{background:#ddf8f4}.save:nth-child(3) .pill{background:#fff2c8}
+.percent{font-size:42px;font-weight:900;line-height:1;margin:8px 0 2px}
+.save:nth-child(1) .percent{color:#3faa20}.save:nth-child(2) .percent{color:#069c90}.save:nth-child(3) .percent{color:#d1a500}
+.off{font-size:11px;font-weight:900}
+.info{margin:16px 18px;padding:16px 17px;border-radius:20px;background:linear-gradient(110deg,#057f72,#00b5a6);color:#fff;display:flex;align-items:center;gap:11px}
+.pin{font-size:30px}.info strong{font-size:15px}.info small{display:block;margin-top:3px;opacity:.92}
+.more{border:0;border-radius:12px;padding:11px 13px;background:var(--lime);color:var(--ink);font-weight:900;white-space:nowrap}
+.booking{margin:16px 18px;padding:20px;background:#fff;border-radius:22px;box-shadow:0 8px 26px rgba(4,63,56,.08)}
+.booking h2{margin:0 0 15px;font-size:20px}
+.fields{display:grid;gap:10px}.field label{display:block;font-size:10px;font-weight:900;letter-spacing:1px;margin-bottom:5px;color:var(--muted)}
+.field input,.field select{width:100%;height:48px;border:1px solid #dce6e2;border-radius:12px;background:#fff;padding:0 12px;color:var(--ink)}
+.search{margin-top:12px;width:100%;height:50px;border:0;border-radius:13px;background:var(--forest);color:#fff;font-weight:900}
+.features{margin:16px 18px 35px;background:#fff;border-radius:20px;display:grid;grid-template-columns:repeat(4,1fr);padding:17px 4px;box-shadow:0 7px 25px rgba(4,63,56,.08)}
+.feature{text-align:center;border-right:1px solid #e1e8e5;padding:2px 4px}.feature:last-child{border:0}
+.icon{font-size:23px}.feature b{display:block;font-size:9px;margin-top:7px}.feature small{font-size:8px;color:var(--muted)}
+footer{background:var(--forest);color:#fff;text-align:center;padding:28px;font-size:12px}
+@media(min-width:700px){
+ .header{padding:0 6%;height:84px}.hero{min-height:650px}.hero-inner{padding:95px 8%}
+ .savings,.info,.booking,.features{max-width:1100px;margin-left:auto;margin-right:auto}
+ .savings{margin-top:-35px}.fields{grid-template-columns:1fr 1fr 1fr}.search{grid-column:1/-1}
+}
+</style>
+
+<style>
+.results-head{margin-top:18px;padding:18px;border-radius:18px;background:#f2f8f5;border:1px solid #dce8e3}
+.results-head h3{margin:0 0 6px;font-size:22px;color:var(--ink)}
+.results-head p{margin:0;color:var(--muted);font-size:12px;line-height:1.45}
+.vehicle-list{display:grid;gap:14px;margin-top:14px}
+.vehicle-card{overflow:hidden;border-radius:18px;background:#fff;border:1px solid #dfeae6;box-shadow:0 8px 24px rgba(4,63,56,.09)}
+.vehicle-photo{width:100%;height:190px;object-fit:cover;display:block}
+.vehicle-body{padding:16px}
+.vehicle-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.vehicle-card h3{margin:0 0 4px;font-size:21px}
+.vehicle-similar{font-size:11px;color:var(--muted)}
+.vehicle-price{text-align:right;white-space:nowrap;font-size:25px;font-weight:900;color:var(--forest)}
+.vehicle-price small{font-size:11px;color:var(--muted);font-weight:800}
+.vehicle-total{text-align:right;font-size:11px;color:var(--muted);margin-top:2px}
+.vehicle-meta{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0}
+.vehicle-meta span{background:#f0f6f3;border-radius:20px;padding:6px 9px;font-size:10px;font-weight:800}
+.vehicle-location{font-size:11px;color:var(--ink);padding-top:10px;border-top:1px solid #edf2f0}
+.vehicle-location b{color:#078f80}
+.vehicle-actions{display:flex;align-items:center;gap:10px;margin-top:12px}
+.vehicle-status{display:inline-block;color:#078f80;font-weight:900;font-size:11px}
+.reserve-vehicle{margin-left:auto;border:0;border-radius:12px;padding:13px 15px;background:var(--forest);color:#fff;font-weight:900;cursor:pointer;touch-action:manipulation}
+.vehicle-badge{display:inline-block;margin-bottom:8px;padding:6px 9px;border-radius:20px;background:var(--lime);color:var(--ink);font-size:9px;font-weight:900}
+@media(min-width:700px){
+ .vehicle-list{grid-template-columns:1fr 1fr}
+ .vehicle-photo{height:170px}
+}
+</style>
+
+
+<style>
+.location-select{width:100%;height:48px;border:1px solid #dce6e2;border-radius:12px;background:#fff;padding:0 12px;color:#72857f;display:flex;align-items:center;justify-content:space-between;text-align:left;font-weight:600}
+.location-select span:last-child{font-size:20px;color:#063f38}
+.location-overlay{position:fixed;inset:0;background:rgba(2,47,43,.42);display:none;align-items:flex-end;justify-content:center;z-index:100}
+.location-sheet{width:100%;max-width:620px;background:#fff;border-radius:24px 24px 0 0;padding:18px 18px 28px;box-shadow:0 -12px 40px rgba(0,0,0,.18)}
+.location-sheet h3{margin:0 0 4px;font-size:20px}.location-sheet p{margin:0 0 14px;color:#72857f;font-size:12px}
+.location-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.location-option{border:1px solid #dce6e2;background:#f7fbf9;border-radius:13px;padding:13px 10px;text-align:left;font-weight:800;color:#073d37}
+.location-option:active{transform:scale(.98);background:#e9f9f3}
+.location-close{width:100%;margin-top:12px;border:0;background:#063f38;color:#fff;border-radius:13px;padding:13px;font-weight:900}
+</style>
+
+<style>
+.location-select{cursor:pointer;-webkit-tap-highlight-color:transparent}
+.location-overlay{position:fixed;inset:0;background:rgba(2,47,43,.48);display:none;align-items:flex-end;justify-content:center;z-index:9999;padding:0}
+.location-overlay.open{display:flex}
+.location-sheet{width:100%;max-width:620px;background:#fff;border-radius:24px 24px 0 0;padding:18px 18px calc(28px + env(safe-area-inset-bottom));box-shadow:0 -12px 40px rgba(0,0,0,.18)}
+.location-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.location-option{min-height:48px;border:1px solid #dce6e2;background:#f7fbf9;border-radius:13px;padding:12px 10px;text-align:left;font-weight:800;color:#073d37;cursor:pointer;touch-action:manipulation}
+.location-option.selected{outline:2px solid #00b7a6;background:#e8faf5}
+.location-close{width:100%;margin-top:12px;border:0;background:#063f38;color:#fff;border-radius:13px;padding:14px;font-weight:900;cursor:pointer;touch-action:manipulation}
+</style>
+</head>
+<body>
+<header class="header">
+ <div class="logo">PURA <span>DRIVE</span></div>
+ <button class="menu" aria-label="Menu">☰</button>
+</header>
+
+<section class="hero">
+ <div class="hero-inner">
+  <div class="kicker">COSTA RICA <span>· DRIVE YOUR WAY</span></div>
+  <h1>RENT<br>MINIMUM<br><span class="accent">3 DAYS.</span><br>MORE DAYS,<br>BETTER PRICE.</h1>
+  <p class="sub">More days of adventure. Better value for your Costa Rica road trip.</p>
+  <button class="reserve" onclick="document.getElementById('booking').scrollIntoView({behavior:'smooth'})">RESERVE NOW&nbsp; ›</button>
+  <a class="vehicles" href="#booking">View vehicles</a>
+ </div>
+</section>
+
+<section class="savings">
+ <h2>THE MORE DAYS, THE MORE YOU SAVE</h2>
+ <div class="save-grid">
+  <div class="save"><span class="pill">4–6 DAYS</span><div class="percent">20%</div><div class="off">OFF</div></div>
+  <div class="save"><span class="pill">7–13 DAYS</span><div class="percent">30%</div><div class="off">OFF</div></div>
+  <div class="save"><span class="pill">14+ DAYS</span><div class="percent">40%</div><div class="off">OFF</div></div>
+ </div>
+</section>
+
+<section class="info">
+ <div class="pin">⌖</div>
+ <div style="flex:1"><strong>PICK-UP & DROP-OFF</strong><small>Anywhere in Costa Rica.</small></div>
+ <button class="more" onclick="document.getElementById('booking').scrollIntoView({behavior:'smooth'})">MORE INFO ›</button>
+</section>
+
+<section class="booking" id="booking">
+ <h2>Book your Costa Rica drive</h2>
+ <div class="fields">
+  <div class="field"><label>PICK-UP LOCATION</label><button class="location-select" type="button" onclick="openLocationPicker('pickup')"><span id="pickupText">Select location</span><span>⌄</span></button><input id="pickup" type="hidden"></div>
+  <div class="field"><label>DROP-OFF LOCATION</label><button class="location-select" type="button" onclick="openLocationPicker('dropoff')"><span id="dropoffText">Select location</span><span>⌄</span></button><input id="dropoff" type="hidden"></div>
+  <div class="field"><label>PICK-UP DATE</label><input id="pickupDate" type="date" required></div>
+  <div class="field"><label>DROP-OFF DATE</label><input id="dropoffDate" type="date" required></div>
+  <div class="field"><label>VEHICLE</label><select id="vehicle"><option value="">Select vehicle</option><option value="Economy">Economy</option><option value="SUV">SUV</option><option value="4x4">4x4</option><option value="Premium">Premium</option></select></div>
+  <button class="search" type="button" onclick="searchVehicles()">SEARCH VEHICLES</button>
+ </div>
+ <div id="bookingResult" style="display:none;margin-top:14px;padding:15px;border-radius:14px;background:#eef9f5;font-size:14px;line-height:1.45"></div>
+ <div id="vehicleResult" style="display:none;margin-top:12px"></div>
+</section>
+
+<section class="features">
+ <div class="feature"><div class="icon">✓</div><b>SAFETY</b><small>Our priority</small></div>
+ <div class="feature"><div class="icon">🚗</div><b>VEHICLES</b><small>Modern & reliable</small></div>
+ <div class="feature"><div class="icon">🏷</div><b>BEST PRICE</b><small>Guaranteed value</small></div>
+ <div class="feature"><div class="icon">◉</div><b>24/7 SUPPORT</b><small>We're here for you</small></div>
+</section>
+
+<footer>PURA DRIVE · COSTA RICA</footer>
+
+<script>
+const VEHICLES = {
+ Economy:{rate:35,seats:5,bags:2,drive:"Automatic",ac:true,available:true},
+ SUV:{rate:49,seats:5,bags:3,drive:"Automatic",ac:true,available:true},
+ "4x4":{rate:65,seats:5,bags:3,drive:"Automatic",ac:true,available:true},
+ Premium:{rate:89,seats:5,bags:3,drive:"Automatic",ac:true,available:true}
+};
+
+(function(){
+ const now=new Date();
+ const iso=new Date(now.getTime()-now.getTimezoneOffset()*60000).toISOString().slice(0,10);
+ const p=document.getElementById("pickupDate"), d=document.getElementById("dropoffDate");
+ if(p&&d){
+  p.min=iso; d.min=iso;
+  p.addEventListener("change",()=>{
+   d.min=p.value||iso;
+   if(d.value&&d.value<d.min)d.value="";
+  });
+ }
+})();
+
+function rentalDays(start,end){
+ return Math.round((new Date(end+"T12:00:00")-new Date(start+"T12:00:00"))/86400000);
+}
+function discountFor(days){
+ return days>=14?40:days>=7?30:days>=4?20:0;
+}
+function money(n){return "$"+n.toFixed(2)}
+
+function searchVehicles(){
+ const pickup=document.getElementById("pickup").value.trim();
+ const dropoff=document.getElementById("dropoff").value.trim();
+ const start=document.getElementById("pickupDate").value;
+ const end=document.getElementById("dropoffDate").value;
+ const selected=document.getElementById("vehicle").value;
+ const result=document.getElementById("bookingResult");
+ const card=document.getElementById("vehicleResult");
+
+ result.style.display="none"; card.style.display="none";
+
+ if(!pickup||!dropoff||!start||!end||!selected){
+  result.style.display="block"; result.style.background="#fff3d6";
+  result.textContent="Please complete all booking fields.";
+  return;
+ }
+
+ const days=rentalDays(start,end);
+ if(days<3){
+  result.style.display="block"; result.style.background="#ffe8e5";
+  result.textContent="Minimum rental is 3 days. Please select dates for at least 3 days.";
+  return;
+ }
+
+ const discount=discountFor(days);
+ const data = {
+  Economy:[
+   ["Toyota Yaris","Economy","https://images.unsplash.com/photo-1550355291-bbee04a92027?auto=format&fit=crop&w=1000&q=85",35,5,2,"Automatic","Gasoline"],
+   ["Hyundai Accent","Economy","https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&w=1000&q=85",37,5,2,"Automatic","Gasoline"]
+  ],
+  SUV:[
+   ["Toyota RAV4","SUV","https://images.unsplash.com/photo-1542362567-b07e54358753?auto=format&fit=crop&w=1000&q=85",54,5,2,"Automatic","Gasoline"],
+   ["Hyundai Tucson","SUV","https://images.unsplash.com/photo-1619767886558-efdc259cde1a?auto=format&fit=crop&w=1000&q=85",59,5,2,"Automatic","Gasoline"],
+   ["Kia Sportage","SUV","https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?auto=format&fit=crop&w=1000&q=85",63,5,2,"Automatic","Gasoline"],
+   ["Nissan X-Trail","SUV","https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=1000&q=85",67,5,2,"Automatic","Gasoline"]
+  ],
+  "4x4":[
+   ["Toyota Hilux","4x4","https://images.unsplash.com/photo-1551830820-330a71b99659?auto=format&fit=crop&w=1000&q=85",65,5,3,"Automatic","Diesel"],
+   ["Suzuki Jimny","4x4","https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&w=1000&q=85",69,4,2,"Automatic","Gasoline"]
+  ],
+  Premium:[
+   ["Toyota Fortuner","Premium","https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=1000&q=85",89,7,3,"Automatic","Gasoline"],
+   ["Volvo XC60","Premium","https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?auto=format&fit=crop&w=1000&q=85",99,5,3,"Automatic","Gasoline"]
+  ]
+ };
+
+ const vehicles=data[selected] || [];
+ const locationText = pickup+" → "+dropoff;
+ result.style.display="block";
+ result.style.background="#eef9f5";
+ result.innerHTML="<strong>"+vehicles.length+" "+selected.toUpperCase()+" VEHICLES AVAILABLE</strong><br>"+
+   locationText+" · "+days+" days"+(discount?" · "+discount+"% OFF":"");
+
+ card.style.display="block";
+ let cards='<div class="results-head"><h3>Choose your vehicle</h3><p>Available for your dates and route. Select the vehicle that best fits your trip.</p></div><div class="vehicle-list">';
+
+ vehicles.forEach(function(v,i){
+   const gross=v[3]*days;
+   const total=gross*(1-discount/100);
+   const save=gross-total;
+   cards+='<article class="vehicle-card">'+
+    '<img class="vehicle-photo" src="'+v[2]+'" alt="'+v[0]+'" loading="lazy">'+
+    '<div class="vehicle-body">'+
+      (i===0?'<div class="vehicle-badge">MOST POPULAR</div>':'')+
+      '<div class="vehicle-top">'+
+        '<div><h3>'+v[0]+'</h3><div class="vehicle-similar">or similar</div></div>'+
+        '<div><div class="vehicle-price">'+money(total)+' <small>/day</small></div><div class="vehicle-total">Total '+days+' days: <b>'+money(total)+'</b></div></div>'+
+      '</div>'+
+      '<div class="vehicle-meta"><span>👥 '+v[4]+' passengers</span><span>🧳 '+v[5]+' bags</span><span>⚙️ '+v[6]+'</span><span>⛽ '+v[7]+'</span></div>'+
+      '<div class="vehicle-location">📍 Available near <b>'+pickup+'</b> · '+(2+i*0.8).toFixed(1)+' km</div>'+
+      '<div class="vehicle-actions"><span class="vehicle-status">✓ AVAILABLE</span>'+
+      '<button class="reserve-vehicle" type="button" onclick="reserveVehicle(\''+v[0].replace(/'/g,"\\'")+'\','+total+')">SELECT / RESERVE NOW</button></div>'+
+      (save>0?'<div style="margin-top:8px;color:#078f80;font-size:10px;font-weight:900">YOU SAVE '+money(save)+' · FREE CANCELLATION</div>':'')+
+    '</div></article>';
+ });
+ cards+='</div>';
+ card.innerHTML=cards;
+ card.scrollIntoView({behavior:"smooth",block:"start"});
+}
+
+function reserveVehicle(name,total){
+ const result=document.getElementById("bookingResult");
+ result.style.display="block"; result.style.background="#eef9f5";
+ result.innerHTML="<strong>"+name+" selected.</strong><br>Total estimated price: <b>"+money(total)+"</b>. Next step: driver details and secure payment.";
+}
+</script>
+
+
+
+
+<div class="location-overlay" id="locationOverlay" aria-hidden="true">
+  <div class="location-sheet" role="dialog" aria-modal="true" aria-labelledby="locationTitle">
+    <h3 id="locationTitle">Select location</h3>
+    <p>Choose your pick-up or drop-off point</p>
+    <div class="location-grid" id="locationGrid"></div>
+    <button class="location-close" id="locationClose" type="button">CLOSE</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  const locations = [
+    "San José","Liberia","Jacó","Manuel Antonio","Tamarindo",
+    "Guanacaste","La Fortuna","Puerto Viejo","SJO Airport","LIR Airport"
+  ];
+
+  let activeField = null;
+
+  const overlay = document.getElementById("locationOverlay");
+  const grid = document.getElementById("locationGrid");
+  const title = document.getElementById("locationTitle");
+  const close = document.getElementById("locationClose");
+
+  if(!overlay || !grid) return;
+
+  locations.forEach(function(name){
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "location-option";
+    b.textContent = name;
+    b.dataset.value = name;
+    b.addEventListener("click", function(){
+      if(!activeField) return;
+      const hidden = document.getElementById(activeField);
+      const label = document.getElementById(activeField + "Text");
+      if(hidden) hidden.value = name;
+      if(label){
+        label.textContent = name;
+        label.style.color = "#073d37";
+      }
+      closePicker();
+    });
+    grid.appendChild(b);
+  });
+
+  function openPicker(field){
+    activeField = field;
+    title.textContent = field === "pickup" ? "Pick-up location" : "Drop-off location";
+    overlay.classList.add("open");
+    overlay.setAttribute("aria-hidden","false");
+    document.body.style.overflow = "hidden";
+  }
+
+  function closePicker(){
+    overlay.classList.remove("open");
+    overlay.setAttribute("aria-hidden","true");
+    document.body.style.overflow = "";
+    activeField = null;
+  }
+
+  document.querySelectorAll(".location-select").forEach(function(button){
+    button.addEventListener("click", function(){
+      openPicker(button.closest(".field").querySelector('input[type="hidden"]').id);
+    });
+  });
+
+  close.addEventListener("click", closePicker);
+  overlay.addEventListener("click", function(e){
+    if(e.target === overlay) closePicker();
+  });
+  document.addEventListener("keydown", function(e){
+    if(e.key === "Escape" && overlay.classList.contains("open")) closePicker();
+  });
+})();
+</script>
+</body>
+</html>
