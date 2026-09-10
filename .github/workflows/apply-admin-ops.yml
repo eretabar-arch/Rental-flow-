@@ -1,0 +1,24 @@
+name: Apply NEAR Drive Admin Ops
+on:
+  push:
+    paths:
+      - 'scripts/patch_admin_ops.py'
+      - '.github/workflows/apply-admin-ops.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - run: python scripts/patch_admin_ops.py
+      - run: |
+          git config user.name "near-drive-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add admin.html
+          git diff --cached --quiet && exit 0
+          git commit -m "Add voucher, profit and next actions to NEAR Drive admin"
+          git push
