@@ -1,0 +1,36 @@
+name: Link NEAR Drive Website
+on:
+  push:
+    paths:
+      - '.github/workflows/link-near-drive-site.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Link website navigation
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text()
+          old='<nav><span>Drive</span><span>Stays</span><span>Experiences</span><span>How it works</span><span class="navtag">Costa Rica</span></nav>'
+          new='<nav><a href="/" style="color:inherit;text-decoration:none">Drive</a><a href="/how-it-works" style="color:inherit;text-decoration:none">How it works</a><a href="/contact" style="color:inherit;text-decoration:none">Contact</a><a href="/terms" style="color:inherit;text-decoration:none">Terms</a><span class="navtag">Costa Rica</span></nav>'
+          if old not in s:
+              raise SystemExit('Expected navigation not found')
+          s=s.replace(old,new,1)
+          old_footer='<footer>NEAR DRIVE · COSTA RICA · Automatic route-aware prototype</footer>'
+          new_footer='<footer>NEAR DRIVE · COSTA RICA<br><br><a href="/how-it-works" style="color:#9eb0a9">How it works</a> · <a href="/contact" style="color:#9eb0a9">Contact</a> · <a href="/terms" style="color:#9eb0a9">Terms</a> · <a href="/privacy" style="color:#9eb0a9">Privacy</a></footer>'
+          if old_footer not in s:
+              raise SystemExit('Expected footer not found')
+          p.write_text(s.replace(old_footer,new_footer,1))
+          PY
+      - name: Commit linked website shell
+        run: |
+          git config user.name "near-drive-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add index.html
+          git diff --cached --quiet || git commit -m "Connect NEAR Drive website navigation"
+          git push
