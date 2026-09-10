@@ -7,9 +7,9 @@ const fallbackProfiles = [
 
 const norm = (s='') => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
 function fallback(origin,destination){
-  const text=norm(`${origin} ${destination}`);
-  let hit=fallbackProfiles.find(p=>p.keys.some(k=>text.includes(norm(k)))) || fallbackProfiles[1];
-  for(const p of fallbackProfiles){ if(p.mode==='remote' && p.keys.some(k=>text.includes(norm(k)))) hit=p; }
+  const dest=norm(destination), originText=norm(origin);
+  let hit=fallbackProfiles.find(p=>p.keys.some(k=>dest.includes(norm(k))));
+  if(!hit) hit=fallbackProfiles.find(p=>p.keys.some(k=>originText.includes(norm(k)))) || fallbackProfiles[1];
   return {...hit, source:'NEAR destination intelligence', confidence:72};
 }
 
