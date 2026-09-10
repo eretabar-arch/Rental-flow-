@@ -1,0 +1,24 @@
+name: Apply NEAR AI Route UI
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/apply-near-ai-route.cjs'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: node scripts/apply-near-ai-route.cjs
+      - name: Commit UI update
+        run: |
+          git config user.name "near-drive-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add index.html
+          git diff --cached --quiet || git commit -m "Show NEAR AI route analysis in vehicle selection"
+          git push
