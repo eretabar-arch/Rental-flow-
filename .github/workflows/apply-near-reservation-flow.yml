@@ -1,0 +1,36 @@
+name: Apply NEAR Reservation Flow
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-near-reservation-flow.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Patch reservation flow
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text()
+          s=s.replace('SECURE CHECKOUT · DEMO','NEAR SECURE CHECKOUT')
+          s=s.replace('<div class="checkoutnote"><b>Reservation step</b><br>Your selected vehicle, NEAR AI route analysis and chosen extras will be attached to this reservation.</div>', '<div class="checkoutnote"><b>How your reservation works</b><br>You pay the rental to NEAR. NEAR then confirms and prepays the selected rental company. At pickup, you owe <b>$0 rental balance</b>; you only provide the rental company\'s refundable security deposit and sign its vehicle contract.</div>')
+          old="function completeCheckout(){if(!validateCheckout())return;const code=reservationCode(),total=getTotal(),extras=selectedExtras();const reservation={code,createdAt:new Date().toISOString(),vehicle:selected.name,match:selected.match,total,deposit:selected.deposit,pickup:pickup.value,destination:dropoff.value,start:start.value,end:end.value,routeMode,driver:{first:coFirst.value.trim(),last:coLast.value.trim(),email:coEmail.value.trim(),phone:coPhone.value.trim(),country:coCountry.value,flight:coFlight.value.trim(),delivery:coDelivery.value.trim()},extras};try{localStorage.setItem('nearDriveLastReservation',JSON.stringify(reservation))}catch(e){}detail.innerHTML=`<div class=\"reservation\" style=\"padding:50px 24px;text-align:center\"><div style=\"font-size:54px\">✓</div><div class=\"eyebrow\" style=\"color:#527400\">NEAR DRIVE · RESERVATION CREATED</div><h2>Your vehicle is selected.</h2><p style=\"color:#66766e\">NEAR AI route analysis and your True Price selection are attached to this reservation.</p><div class=\"rescard\"><div style=\"font-size:10px;color:#77867f;font-weight:900\">RESERVATION NUMBER</div><div class=\"rescode\">${code}</div><div class=\"resrow\"><span>Vehicle</span><b>${selected.name}</b></div><div class=\"resrow\"><span>NEAR Match</span><b>${selected.match}%</b></div><div class=\"resrow\"><span>Route</span><b>${pickup.value} → ${dropoff.value}</b></div><div class=\"resrow\"><span>Dates</span><b>${start.value} → ${end.value}</b></div><div class=\"resrow\"><span>Extras</span><b>${extras.length?extras.join(', '):'None'}</b></div><div class=\"resrow\"><span>True Price</span><b>$${total}</b></div><div class=\"resrow\"><span>Deposit</span><b>$${selected.deposit}</b></div></div><div class=\"payready\"><b>Payment integration ready:</b> this confirmation step is isolated so real payment authorization and supplier booking can be inserted here without changing the customer flow.</div><button class=\"continue\" style=\"max-width:300px\" onclick=\"closeDeal()\">BACK TO NEAR DRIVE</button></div>`}"
+          new="async function completeCheckout(){if(!validateCheckout())return;const code=reservationCode(),total=getTotal(),extras=selectedExtras();const reservation={code,createdAt:new Date().toISOString(),status:'SUPPLIER_PENDING',paymentStatus:'PAID_TO_NEAR',vehicle:selected.name,match:selected.match,total,deposit:selected.deposit,pickup:pickup.value,destination:dropoff.value,start:start.value,end:end.value,routeMode,driver:{first:coFirst.value.trim(),last:coLast.value.trim(),email:coEmail.value.trim(),phone:coPhone.value.trim(),country:coCountry.value,flight:coFlight.value.trim(),delivery:coDelivery.value.trim()},extras};try{localStorage.setItem('nearDriveLastReservation',JSON.stringify(reservation))}catch(e){}let mail={emailSent:false};try{const r=await fetch('/api/reservation',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(reservation)});mail=await r.json()}catch(e){}detail.innerHTML=`<div class=\"reservation\" style=\"padding:50px 24px;text-align:center\"><div style=\"font-size:54px\">✓</div><div class=\"eyebrow\" style=\"color:#527400\">NEAR DRIVE · RESERVATION RECEIVED</div><h2>Payment received. Supplier confirmation pending.</h2><p style=\"color:#66766e\">NEAR will reserve and prepay the selected rental company. You will receive your final supplier voucher after confirmation.</p><div class=\"rescard\"><div style=\"font-size:10px;color:#77867f;font-weight:900\">NEAR RESERVATION NUMBER</div><div class=\"rescode\">${code}</div><div class=\"resrow\"><span>Status</span><b>SUPPLIER PENDING</b></div><div class=\"resrow\"><span>Vehicle</span><b>${selected.name}</b></div><div class=\"resrow\"><span>NEAR Match</span><b>${selected.match}%</b></div><div class=\"resrow\"><span>Route</span><b>${pickup.value} → ${dropoff.value}</b></div><div class=\"resrow\"><span>Dates</span><b>${start.value} → ${end.value}</b></div><div class=\"resrow\"><span>Paid to NEAR</span><b>$${total}</b></div><div class=\"resrow\"><span>Rental balance at desk</span><b>$0</b></div><div class=\"resrow\"><span>Refundable security deposit at rental desk</span><b>$${selected.deposit}</b></div><div class=\"resrow\"><span>Extras</span><b>${extras.length?extras.join(', '):'None'}</b></div></div><div class=\"payready\"><b>Pickup:</b> present your final voucher, sign the rental company contract and provide the refundable security deposit directly to the rental company. The rental itself is prepaid by NEAR.${mail.emailSent?' NEAR administration has been notified automatically.':''}</div><button class=\"continue\" style=\"max-width:300px\" onclick=\"closeDeal()\">BACK TO NEAR DRIVE</button></div>`}"
+          if old not in s:
+            raise SystemExit('checkout function signature not found')
+          s=s.replace(old,new,1)
+          p.write_text(s)
+          PY
+      - name: Commit reservation flow
+        run: |
+          git config user.name 'near-drive-bot'
+          git config user.email 'actions@users.noreply.github.com'
+          git add index.html
+          git commit -m 'Align checkout with NEAR prepaid supplier-pending flow' || exit 0
+          git push
