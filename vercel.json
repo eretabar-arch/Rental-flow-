@@ -8,5 +8,8 @@
     { "source": "/terms", "destination": "/terms.html" },
     { "source": "/privacy", "destination": "/privacy.html" },
     { "source": "/admin", "destination": "/admin.html" }
+  ],
+  "headers": [
+    { "source": "/", "headers": [{ "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }] }
   ]
 }
