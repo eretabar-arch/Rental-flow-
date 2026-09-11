@@ -1,6 +1,10 @@
 name: Capture Thrifty SJO 7-day rates
 
 on:
+  push:
+    paths:
+      - 'scripts/capture-thrifty-sjo.mjs'
+      - '.github/workflows/capture-thrifty-sjo.yml'
   workflow_dispatch:
     inputs:
       pickup_date:
@@ -36,10 +40,10 @@ jobs:
           npx playwright install --with-deps chromium
       - name: Run public booking-flow capture
         env:
-          PICKUP_DATE: ${{ inputs.pickup_date }}
-          DROPOFF_DATE: ${{ inputs.dropoff_date }}
-          PICKUP_TIME: ${{ inputs.pickup_time }}
-          DROPOFF_TIME: ${{ inputs.dropoff_time }}
+          PICKUP_DATE: ${{ inputs.pickup_date || '09/24/2026' }}
+          DROPOFF_DATE: ${{ inputs.dropoff_date || '10/01/2026' }}
+          PICKUP_TIME: ${{ inputs.pickup_time || '10:00' }}
+          DROPOFF_TIME: ${{ inputs.dropoff_time || '10:00' }}
         run: node scripts/capture-thrifty-sjo.mjs || true
       - name: Print summary
         run: cat capture/thrifty-sjo/summary.json || true
