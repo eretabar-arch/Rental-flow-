@@ -1,0 +1,51 @@
+name: Capture Thrifty SJO 7-day rates
+
+on:
+  workflow_dispatch:
+    inputs:
+      pickup_date:
+        description: 'Pickup date MM/DD/YYYY'
+        required: false
+        default: '09/24/2026'
+      dropoff_date:
+        description: 'Dropoff date MM/DD/YYYY'
+        required: false
+        default: '10/01/2026'
+      pickup_time:
+        description: 'Pickup time HH:MM'
+        required: false
+        default: '10:00'
+      dropoff_time:
+        description: 'Dropoff time HH:MM'
+        required: false
+        default: '10:00'
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install Playwright
+        run: |
+          npm init -y
+          npm install playwright@1.55.0
+          npx playwright install --with-deps chromium
+      - name: Run public booking-flow capture
+        env:
+          PICKUP_DATE: ${{ inputs.pickup_date }}
+          DROPOFF_DATE: ${{ inputs.dropoff_date }}
+          PICKUP_TIME: ${{ inputs.pickup_time }}
+          DROPOFF_TIME: ${{ inputs.dropoff_time }}
+        run: node scripts/capture-thrifty-sjo.mjs || true
+      - name: Print summary
+        run: cat capture/thrifty-sjo/summary.json || true
+      - name: Upload capture artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: thrifty-sjo-7day-capture
+          path: capture/thrifty-sjo/
+          if-no-files-found: error
