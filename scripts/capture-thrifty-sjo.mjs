@@ -18,7 +18,7 @@ page.on('response', async (r) => {
     const ct = (r.headers()['content-type'] || '').toLowerCase();
     if (!ct.includes('json') && !ct.includes('text')) return;
     const text = await r.text();
-    if (/price|precio|tarifa|rate|total|vehicle|vehiculo|auto|car|usd/i.test(text)) {
+    if (/price|precio|tarifa|rate|total|vehicle|vehiculo|auto|car|usd|location|agencia/i.test(text)) {
       network.push({ url: r.url(), status: r.status(), contentType: ct, body: text.slice(0, 200000) });
     }
   } catch {}
@@ -28,9 +28,27 @@ function fail(reason, extra = {}) {
   return { ok: false, provider: 'THRIFTY_CR', sourceMode: 'PUBLIC_BOOKING_FLOW', sourceUrl: url, pickup: 'San José Aeropuerto Internacional (SJO)', dropoff: 'San José Aeropuerto Internacional (SJO)', pickupDate, dropoffDate, pickupTime, dropoffTime, reason, ...extra, capturedAt: new Date().toISOString() };
 }
 
+async function dumpSelects() {
+  const all = page.locator('select');
+  const rows = [];
+  for (let i=0;i<await all.count();i++) {
+    const s=all.nth(i);
+    rows.push({
+      index:i,
+      name:await s.getAttribute('name'),
+      id:await s.getAttribute('id'),
+      visible:await s.isVisible().catch(()=>false),
+      options:await s.locator('option').evaluateAll(os=>os.map(o=>({value:o.value,text:(o.textContent||'').trim()}))).catch(()=>[])
+    });
+  }
+  await fs.writeFile(`${outDir}/selects.json`, JSON.stringify(rows,null,2));
+  console.log('FORM_SELECTS='+JSON.stringify(rows));
+  return rows;
+}
+
 async function pickSJO(select) {
   const opts = await select.locator('option').evaluateAll(os => os.map(o => ({ value:o.value, text:(o.textContent||'').trim() })));
-  const hit = opts.find(o => /san jos[eé].*sjo|sjo.*san jos[eé]|juan santamar/i.test(o.text));
+  const hit = opts.find(o => /san jos[eé]|juan santamar|aeropuerto.*internacional/i.test(o.text) && !/liberia|daniel oduber/i.test(o.text));
   if (!hit) throw new Error('SJO option not found');
   await select.selectOption(hit.value);
   return hit.text;
@@ -39,16 +57,16 @@ async function pickSJO(select) {
 let result;
 try {
   await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
-  await page.waitForTimeout(2500);
+  await page.waitForTimeout(3500);
+  const formSelects=await dumpSelects();
+  const locationIndexes=formSelects.filter(r=>r.options.some(o=>/san jos[eé]|juan santamar/i.test(o.text))).map(r=>r.index);
+  const timeIndexes=formSelects.filter(r=>r.options.some(o=>/10:00|10 AM|10:00 AM/i.test(o.text))).map(r=>r.index);
+  if(locationIndexes.length<2) throw new Error(`Expected two location selects; found ${locationIndexes.join(',')||'none'}`);
+  const all=page.locator('select');
+  const pickupOffice=await pickSJO(all.nth(locationIndexes[0]));
+  const dropoffOffice=await pickSJO(all.nth(locationIndexes[1]));
 
-  const selects = page.locator('select:visible');
-  const count = await selects.count();
-  if (count < 4) throw new Error(`Expected at least 4 visible selects, found ${count}`);
-
-  const pickupOffice = await pickSJO(selects.nth(0));
-  const dropoffOffice = await pickSJO(selects.nth(2));
-
-  const dates = page.locator('input[placeholder*="MM/DD"], input[type="date"]');
+  const dates = page.locator('input[placeholder*="MM/DD"], input[type="date"], input[name*="date" i]');
   if (await dates.count() < 2) throw new Error('Pickup/dropoff date inputs not found');
   await dates.nth(0).fill(pickupDate);
   await dates.nth(1).fill(dropoffDate);
@@ -56,15 +74,14 @@ try {
   const chooseTime = async (sel, target) => {
     const opts = await sel.locator('option').evaluateAll(os => os.map(o => ({ value:o.value, text:(o.textContent||'').trim() })));
     const normalized = target.replace(':', '');
-    const hit = opts.find(o => o.text.includes(target) || o.value === target || o.value.replace(':','') === normalized);
+    const hit = opts.find(o => o.text.includes(target) || o.value === target || (o.value||'').replace(':','') === normalized || /10(:00)?\s*(am)?/i.test(o.text));
     if (hit) await sel.selectOption(hit.value);
   };
-  await chooseTime(selects.nth(1), pickupTime);
-  await chooseTime(selects.nth(3), dropoffTime);
+  if(timeIndexes.length>=2){ await chooseTime(all.nth(timeIndexes[0]), pickupTime); await chooseTime(all.nth(timeIndexes[1]), dropoffTime); }
 
   const searchButton = page.getByRole('button', { name: /buscar|search/i }).first();
   await searchButton.click();
-  await page.waitForTimeout(7000);
+  await page.waitForTimeout(8000);
 
   const body = await page.locator('body').innerText();
   const money = [...body.matchAll(/(?:USD\s*)?\$\s?([0-9]+(?:[.,][0-9]{1,2})?)/gi)].map(m => m[0]);
@@ -94,6 +111,7 @@ try {
       };
 } catch (e) {
   try { await page.screenshot({ path: `${outDir}/error.png`, fullPage: true }); } catch {}
+  await fs.writeFile(`${outDir}/network.json`, JSON.stringify(network, null, 2)).catch(()=>{});
   result = fail('CAPTURE_ERROR', { error: String(e?.message || e) });
 }
 
