@@ -50,7 +50,7 @@ export default async function handler(req,res){
     const need4x4=base.need4x4 || score>=78;
     const level=score>=90?'4X4 REQUIRED':score>=72?'CHALLENGING':score>=42?'MODERATE':'EASY';
     return res.status(200).json({
-      live:true,source:'NEAR AI + openrouteservice',confidence:92,origin,destination,distanceKm,score,level,need4x4,
+      live:true,source:'NEAR AI + openrouteservice',confidence:92,origin,destination,distanceKm,score,level,need4x4,geometry:f?.geometry||null,
       paved:Math.max(0,100-unpavedHint),gravel:unpavedHint,remote:base.remote,
       factors:{destinationBase:base.score,steepnessSignal:steepPct,surfaceSignal:unpavedHint},
       reason: need4x4 ? 'NEAR AI analyzed the route and found road conditions where added clearance and 4x4 capability materially improve suitability.' : 'NEAR AI analyzed the route and found that a lower-cost paved-road vehicle can remain a strong match.'
