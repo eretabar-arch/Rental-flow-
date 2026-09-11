@@ -59,3 +59,5 @@ export default async function handler(req,res){
     return res.status(200).json({...base,live:false,note:'Live route service unavailable; NEAR automatically used its destination intelligence fallback.'});
   }
 }
+
+// Live Route build trigger
