@@ -33,3 +33,4 @@ if 'function updateRouteExperience()' not in s:
     s=s.replace('function priceScore(c)',js+'\nfunction priceScore(c)')
     s=s.replace('function applyRoute(mode,note){routeMode=mode;',"function applyRoute(mode,note){routeMode=mode;setTimeout(()=>{try{updateRouteExperience()}catch(e){}},0);")
 p.write_text(s)
+# route-experience-v2
